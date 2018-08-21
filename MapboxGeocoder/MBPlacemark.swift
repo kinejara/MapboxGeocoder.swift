@@ -566,7 +566,7 @@ open class GeocodedPlacemark: Placemark {
         return properties?.phoneNumber
     }
     
-    @objc open override var stateCodeProperty: String? {
+    @objc open var stateCode: String? {
         return properties?.shortCode
     }
 }
