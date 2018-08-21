@@ -267,7 +267,10 @@ open class Placemark: NSObject, Codable {
     @objc open var phoneNumber: String? {
         return nil
     }
-    
+
+    @objc open var stateCode: String? {
+        return nil
+    }
     // MARK: Accessing Containing Placemarks
     
     /**
@@ -566,7 +569,11 @@ open class GeocodedPlacemark: Placemark {
         return properties?.phoneNumber
     }
     
-    @objc open var stateCode: String? {
+    /**
+     The shortCode for the stateCode.
+     */
+    
+    @objc open override var stateCode: String? {
         return properties?.shortCode
     }
 }
