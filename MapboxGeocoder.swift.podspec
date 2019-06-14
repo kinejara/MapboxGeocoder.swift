@@ -41,9 +41,6 @@ Pod::Spec.new do |s|
 
   s.requires_arc = true
   s.module_name = "MapboxGeocoder"
-<<<<<<< HEAD
-=======
   s.swift_version = "5.0"
->>>>>>> master-original
 
 end
