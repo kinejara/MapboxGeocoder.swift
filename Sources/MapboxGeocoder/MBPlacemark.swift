@@ -76,6 +76,7 @@ open class Placemark: NSObject, Codable {
         case wikidataItemIdentifier = "wikidata"
         case properties
         case boundingBox = "bbox"
+        case placeType = "place_type"
     }
     
     /**
@@ -101,6 +102,7 @@ open class Placemark: NSObject, Codable {
         address = try container.decodeIfPresent(String.self, forKey: .address)
         qualifiedName = try container.decodeIfPresent(String.self, forKey: .qualifiedName)
         superiorPlacemarks = try container.decodeIfPresent([GeocodedPlacemark].self, forKey: .superiorPlacemarks)
+        placeType = try container.decodeIfPresent([String].self, forKey: .placeType)
         
         if let coordinates = try container.decodeIfPresent([CLLocationDegrees].self, forKey: .centerCoordinate) {
             let coordinate = CLLocationCoordinate2D(geoJSON: coordinates)
@@ -127,6 +129,7 @@ open class Placemark: NSObject, Codable {
         try container.encode(code, forKey: .code)
         try container.encode(wikidataItemIdentifier, forKey: .wikidataItemIdentifier)
         try container.encode(properties, forKey: .properties)
+        try container.encode(placeType, forKey: .placeType)
         if let location = location {
             try container.encode([location.coordinate.longitude, location.coordinate.latitude], forKey: .centerCoordinate)
         }
@@ -186,6 +189,11 @@ open class Placemark: NSObject, Codable {
      If the placemark represents an address or point of interest, the value of this property includes the full address. Otherwise, the value of this property includes any containing administrative areas.
      */
     @objc open var qualifiedName: String?
+    
+    /**
+     An array representing the type of place that is the feature.
+     */
+    @objc open internal(set) var placeType: [String]?
     
     #if SWIFT_PACKAGE
     /**
@@ -287,6 +295,13 @@ open class Placemark: NSObject, Codable {
      The phone number associated with the business represented by the placemark.
      */
     @objc open var phoneNumber: String? {
+        return nil
+    }
+    
+    /**
+     The phone number associated with the business represented by the placemark.
+     */
+    @objc open var stateCodeProperty: String? {
         return nil
     }
     
@@ -604,6 +619,13 @@ open class GeocodedPlacemark: Placemark {
      */
     @objc open override var phoneNumber: String? {
         return properties?.phoneNumber
+    }
+    
+    /**
+     The the state code of this location.
+     */
+    @objc open override var stateCodeProperty: String? {
+        return properties?.shortCode
     }
     
     #if SWIFT_PACKAGE
