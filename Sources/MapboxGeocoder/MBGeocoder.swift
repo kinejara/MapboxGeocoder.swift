@@ -1,4 +1,5 @@
 import Foundation
+import CoreLocation
 
 typealias JSONDictionary = [String: Any]
 
@@ -6,7 +7,9 @@ typealias JSONDictionary = [String: Any]
 public let MBGeocoderErrorDomain = "MBGeocoderErrorDomain"
 
 /// The Mapbox access token specified in the main application bundle’s Info.plist.
-let defaultAccessToken = Bundle.main.infoDictionary?["MGLMapboxAccessToken"] as? String
+let defaultAccessToken =
+    Bundle.main.object(forInfoDictionaryKey: "MBXAccessToken") as? String ??
+    Bundle.main.object(forInfoDictionaryKey: "MGLMapboxAccessToken") as? String
 
 /// The user agent string for any HTTP requests performed directly within this library.
 let userAgent: String = {
@@ -24,7 +27,7 @@ let userAgent: String = {
     }
 
     let system: String
-    #if os(OSX)
+    #if os(macOS)
         system = "macOS"
     #elseif os(iOS)
         system = "iOS"
@@ -34,6 +37,8 @@ let userAgent: String = {
         system = "tvOS"
     #elseif os(Linux)
         system = "Linux"
+    #else
+        system = "unknown"
     #endif
     let systemVersion = ProcessInfo().operatingSystemVersion
     components.append("\(system)/\(systemVersion.majorVersion).\(systemVersion.minorVersion).\(systemVersion.patchVersion)")

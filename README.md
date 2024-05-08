@@ -2,39 +2,59 @@
 
 [![CircleCI](https://circleci.com/gh/mapbox/MapboxGeocoder.swift.svg?style=svg)](https://circleci.com/gh/mapbox/MapboxGeocoder.swift)
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
-[![CocoaPods](https://img.shields.io/cocoapods/v/MapboxGeocoder.swift.svg)](http://cocoadocs.org/docsets/MapboxGeocoder.swift/)
+[![SPM compatible](https://img.shields.io/badge/SPM-compatible-4BC51D.svg?style=flat)](https://swift.org/package-manager/)
+[![CocoaPods](https://img.shields.io/cocoapods/v/MapboxGeocoder.swift.svg)](http://cocoapods.org/pods/MapboxGeocoder.swift/)
 
-MapboxGeocoder.swift makes it easy to connect your iOS, macOS, tvOS, or watchOS application to the [Mapbox Geocoding API](https://www.mapbox.com/geocoding/). MapboxGeocoder.swift exposes the power of the [Carmen](https://github.com/mapbox/carmen) geocoder through a simple API similar to Core Location’s CLGeocoder.
+MapboxGeocoder.swift makes it easy to connect your iOS, macOS, tvOS, or watchOS application to the [Mapbox Geocoding API](https://docs.mapbox.com/api/search/geocoding/). MapboxGeocoder.swift exposes the power of the [Carmen](https://github.com/mapbox/carmen) geocoder through a simple API similar to Core Location’s CLGeocoder.
 
-MapboxGeocoder.swift pairs well with [MapboxDirections.swift](https://github.com/mapbox/MapboxDirections.swift), [MapboxStatic.swift](https://github.com/mapbox/MapboxStatic.swift), and the [Mapbox Maps SDK for iOS](https://www.mapbox.com/ios-sdk/) or the [Mapbox Maps SDK for macOS](https://github.com/mapbox/mapbox-gl-native/tree/master/platform/macos).
+Note that use of the Geocoding API via MapboxGeocoder.swift is billed by API requests. For more information, see the [Geocoding API pricing documentation](https://docs.mapbox.com/api/search/geocoding/#geocoding-api-pricing).
+
+MapboxGeocoder.swift pairs well with [Mapbox Directions for Swift](https://github.com/mapbox/mapbox-directions-swift/), [MapboxStatic.swift](https://github.com/mapbox/MapboxStatic.swift), and the [Mapbox Maps SDK for iOS](https://docs.mapbox.com/ios/maps/) or the [Mapbox Maps SDK for macOS](https://mapbox.github.io/mapbox-gl-native/macos/).
 
 ## Getting started
 
 Specify the following dependency in your [Carthage](https://github.com/Carthage/Carthage/) Cartfile:
 
 ```cartfile
-github "mapbox/MapboxGeocoder.swift" ~> 0.11
+github "mapbox/MapboxGeocoder.swift" ~> 0.14
 ```
 
 Or in your [CocoaPods](http://cocoapods.org/) Podfile:
 
 ```podspec
-pod 'MapboxGeocoder.swift', '~> 0.11'
+pod 'MapboxGeocoder.swift', '~> 0.14'
+```
+
+Or in your [Swift Package Manager](https://swift.org/package-manager/) Package.swift:
+
+```swift
+.package(url: "https://github.com/mapbox/MapboxGeocoder.swift.git", from: "0.14.0")
 ```
 
 Then `import MapboxGeocoder` or `@import MapboxGeocoder;`.
 
 For Objective-C targets, it may be necessary to enable the `ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES` build setting.
 
-v0.6.3 is the last release of MapboxGeocoder.swift written in Swift 3.2. The `swift3.2` branch corresponds to this release, plus any critical bug fixes that have been applied since. All subsequent releases will be based on the `master` branch, which is written in Swift 4. The Swift examples below are written in Swift 4; see the `swift3.2` branch’s readme for Swift 3.2 examples.
+This repository includes example applications written in both Swift and Objective-C showing use of the framework (as well as a comparison of writing apps in either language). The [Mapbox API Documentation](https://docs.mapbox.com/api/search/geocoding/) explains the underlying HTTP request and response format, as well as [relevant limits](https://docs.mapbox.com/api/search/#geocoding-restrictions-and-limits) that also apply when using this library.
 
-This repository includes example applications written in both Swift and Objective-C showing use of the framework (as well as a comparison of writing apps in either language). More examples and detailed documentation are available in the [Mapbox API Documentation](https://www.mapbox.com/api-documentation/search/#geocoding).
+## System requirements
+
+* One of the following package managers:
+   * CocoaPods (CocoaPods 1.10 or above if using Xcode 12)
+   * Carthage 0.19 or above (run [this script](https://github.com/mapbox/MapboxGeocoder.swift/blob/main/scripts/wcarthage.sh) instead of `carthage` if using Xcode 12)
+   * Swift Package Manager 5.3 or above
+* Xcode 11 or above (Xcode 12 or above if using Swift Package Manager)
+* One of the following operating systems:
+   * iOS 10.0 or above
+   * macOS 10.12.0 or above
+   * tvOS 10.0 or above
+   * watchOS 3.0 or above
 
 ## Usage
 
-You will need a [Mapbox access token](https://www.mapbox.com/api-documentation/#access-tokens-and-token-scopes) in order to use the API. If you’re already using the [Mapbox Maps SDK for iOS](https://www.mapbox.com/ios-sdk/) or [Mapbox Maps SDK for macOS](https://github.com/mapbox/mapbox-gl-native/tree/master/platform/macos), MapboxGeocoder.swift automatically recognizes your access token, as long as you’ve placed it in the `MGLMapboxAccessToken` key of your application’s Info.plist file.
+You will need a [Mapbox access token](https://docs.mapbox.com/api/overview/#access-tokens-and-token-scopes) in order to use the API. If you’re already using the [Mapbox Maps SDK for iOS](https://docs.mapbox.com/ios/maps/) or [Mapbox Maps SDK for macOS](https://mapbox.github.io/mapbox-gl-native/macos/), MapboxGeocoder.swift automatically recognizes your access token, as long as you’ve placed it in the `MGLMapboxAccessToken` key of your application’s Info.plist file.
 
-The examples below are each provided in Swift (denoted with `main.swift`) and Objective-C (`main.m`). For further details, see the [MapboxGeocoder.swift API reference](http://cocoadocs.org/docsets/MapboxGeocoder.swift/).
+The examples below are each provided in Swift (denoted with `main.swift`) and Objective-C (`main.m`). For further details about each class and method, use the Quick Help feature inside Xcode.
 
 ### Basics
 
@@ -74,7 +94,7 @@ _Forward geocoding_ takes a human-readable query, such as a place name or addres
 
 ```swift
 // main.swift
-#if !os(tvOS)
+#if canImport(Contacts)
     import Contacts
 #endif
 
@@ -99,7 +119,7 @@ let task = geocoder.geocode(options) { (placemarks, attribution, error) in
     print("\(coordinate.latitude), \(coordinate.longitude)")
         // 45.270093, -66.050985
 
-    #if !os(tvOS)
+    #if canImport(Contacts)
         let formatter = CNPostalAddressFormatter()
         print(formatter.string(from: placemark.postalAddress!))
             // 200 Queen St
@@ -245,7 +265,7 @@ NSURLSessionDataTask *task = [geocoder batchGeocodeWithOptions:options
 }];
 ```
 
-Batch geocoding is available to Mapbox enterprise accounts. See the [Mapbox Geocoding](https://www.mapbox.com/geocoding/) website for more information.
+Batch geocoding is available to Mapbox enterprise accounts. See the [Mapbox Geocoding](https://docs.mapbox.com/api/search/geocoding/) website for more information.
 
 ## Tests
 
@@ -254,3 +274,5 @@ To run the included unit tests, you need to use [Carthage](https://github.com/Ca
 1. `carthage bootstrap`
 1. `open MapboxGeocoder.xcodeproj`
 1. Switch to the “MapboxGeocoder iOS” scheme and go to Product ‣ Test.
+
+Alternatively, open Package.swift in Xcode and go to Product ‣ Test, or run `swift test` on the command line.
